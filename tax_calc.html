@@ -1,0 +1,223 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Language" content="en">
+
+    <title>Tax Calculator</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://kit.fontawesome.com/a376f17586.js" crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Lato&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&amp;display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js" type="text/javascript"></script>
+
+    <script id="webpushr-jssdk" async="" src="https://cdn.webpushr.com/app.min.js"></script>
+</head>
+
+<body style="background-color: rgb(206, 238, 248);">
+    <div id="wrapper_main">
+
+        <div id="site_content" style="min-height: 402px;">
+
+            <script type="text/javascript">
+
+                $(document).ready(function () {
+                    $(".divider-bar").hide();
+                    $("#calcB").hide();
+                    $("#cal").submit(function () {
+                        return false;
+                    });
+
+                    $("#incomeAmount").on("change keyup", function () {
+                        if ($("#autoCalc").is(":checked")) {
+                            calculateTax();
+                        }
+                    });
+
+                    $("#incomeAmount").on("keyup", function() {
+                        var input = $(this);
+                        if (input.val() == "") {
+                            $('#clearB').prop('disabled', true);
+                            $('#calcB').prop('disabled', true);
+                            $("#result").html('');
+                            $("#summary1").text("");
+                            $("#summary2").text("");
+                            $("#summary3").text("");
+                            $(".divider-bar").hide();
+                        } else {
+                            $('#clearB').prop('disabled', false);
+                            $('#calcB').prop('disabled', false);
+                        }
+                    });
+
+                    $("#clearB").on("click", function() {
+                        var input = $("#incomeAmount").val("");
+                        $(this).prop('disabled', true);
+                        $("#calcB").prop('disabled', true);
+                        $("#result").html('');
+                        $("#summary1").text("");
+                        $("#summary2").text("");
+                        $("#summary3").text("");
+                        $(".divider-bar").hide();
+                    });
+
+                    $("#autoCalc").on("change", function() {
+                        var input = $("#incomeAmount");
+                        if ($(this).is(":checked")) {
+                            $("#calcB").hide();
+                            calculateTax();
+                        // } else if (input.val() != "") {
+                        } else {
+                            $("#calcB").show();
+                        }
+                    });
+
+                    $("#calcB").on("click", function() {
+                        calculateTax();
+                    });
+
+                });
+
+                $.fn.digits = function () {
+                    return this.each(function () {
+                        $(this).text($(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
+                    })
+                }
+
+                function numberWithCommas(x) {
+                    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+
+                function calculateTax() {
+                    var annualTax = 0;
+                    var monthlyIncome = $("#incomeAmount").val();
+                    var yearlyIncome = monthlyIncome * 12;
+                    if (yearlyIncome > 1200000) {
+                        $("#result").html('<table class="table table-hover border border-info" style="width:100%; max-width: 680px; text-align:right; display: inline-block;"><thead style="text-align:center;" class="thead-dark"><tr><th width="32%">Annual Salary (LKR)</th><th width="30%">Monthly Salary (LKR)</th><th width="15%">Rate (%)</th><th>Tax Amount (LKR)</th></tr></thead><tbody id="tb"></tbody></table>');
+                        if (yearlyIncome >= 3700000) {
+                            var taxOfCurrentBlock = (yearlyIncome - 3700000) * 36 / 100;
+                            $("#tb").prepend('<tr><td>3,700,001 or above</td><td>308,334 or above</td><td>36</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            annualTax += taxOfCurrentBlock;
+                        }
+                        if (yearlyIncome > 3200000) {
+                            var upperLimit = (yearlyIncome > 3700000) ? 3700000 : yearlyIncome;
+                            var taxOfCurrentBlock = (upperLimit - 3200000) * 30 / 100;
+                            $("#tb").prepend('<tr><td>3,200,001 to 3,700,000</td><td>266,667 to 308,333</td><td>30</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            annualTax += taxOfCurrentBlock;
+                        }
+                        if (yearlyIncome > 2700000) {
+                            var upperLimit = (yearlyIncome > 3200000) ? 3200000 : yearlyIncome;
+                            var taxOfCurrentBlock = (upperLimit - 2700000) * 24 / 100;
+                            $("#tb").prepend('<tr><td>2,700,001 to 3,200,000</td><td>225,001 to 266,666</td><td>24</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            annualTax += taxOfCurrentBlock;
+                        }
+                        if (yearlyIncome > 2200000) {
+                            var upperLimit = (yearlyIncome > 2700000) ? 2700000 : yearlyIncome;
+                            var taxOfCurrentBlock = (upperLimit - 2200000) * 18 / 100;
+                            $("#tb").prepend('<tr><td>2,200,001 to 2,700,000</td><td>183,334 to 225,000</td><td>18</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            annualTax += taxOfCurrentBlock;
+                        }
+                        if (yearlyIncome > 1700000) {
+                            var upperLimit = (yearlyIncome > 2200000) ? 2200000 : yearlyIncome;
+                            var taxOfCurrentBlock = (upperLimit - 1700000) * 12 / 100;
+                            $("#tb").prepend('<tr><td>1,700,001 to 2,200,000</td><td>141,667 to 183,333</td><td>12</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            annualTax += taxOfCurrentBlock;
+                        }
+                        if (yearlyIncome > 1200000) {
+                            var upperLimit = (yearlyIncome > 1700000) ? 1700000 : yearlyIncome;
+                            var taxOfCurrentBlock = (upperLimit - 1200000) * 6 / 100;
+                            $("#tb").prepend('<tr><td>1,200,001 to 1,700,000</td><td>100,001 to 141,666</td><td>6</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            annualTax += taxOfCurrentBlock;
+                        }
+                        if (yearlyIncome > 0) {
+                            var taxOfCurrentBlock = 0;
+                            $("#tb").prepend('<tr><td>0 to 1,200,000</td><td>0 to 100,000</td><td>-</td><td>-</td></tr>');
+                            annualTax += taxOfCurrentBlock;
+                        }
+                        $("#tb").append('<tr><td colspan="2"></td><td class="table-info"><strong>Total</strong></td><td class="table-info">' + numberWithCommas((annualTax / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                        $("#summary1").text('Total Tax Amount for ' + numberWithCommas(monthlyIncome) + ' LKR is');
+                        $("#summary2").text(numberWithCommas((annualTax / 12).toFixed(2).toLocaleString("en")));
+                        $("#summary3").text('Remaining amount on your hand - ' + numberWithCommas((monthlyIncome - (annualTax / 12)).toFixed(2).toLocaleString("en")) + ' LKR');
+                        $(".divider-bar").show();
+                        $("#summary2").css('color', 'crimson');
+                    } else {
+                        $("#result").html("");
+                        $("#summary1").text("");
+                        $("#summary2").text('No Tax');
+                        $("#summary2").css('color', 'green');
+                        $("#summary3").text("");
+                        $(".divider-bar").hide();
+                    }
+                }
+
+            </script>
+
+            <style>
+                #tb td {
+                    text-align: right;
+                }
+
+                input::-webkit-outer-spin-button,
+                input::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+            </style>
+
+
+            <div class="container" style="font-family:Oswald; line-height: 1.5em;">
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <h1 class="topic_page" style="margin-top: 5%; margin-bottom: 3%;">Tax Calculator Sri Lanka (2023)</h1>
+                        <form id="cal">
+                            <div class="row justify-content-center" style="align-items: center;">
+                                <div class="col-xs-12">Enter your monthly income (LKR) <i class="fa-solid fa-sack-dollar"></i></div>
+                                <div class="col-md-3 col-sm-4">
+                                    <input type="number" name="incomeAmount" id="incomeAmount" value=""
+                                        class="required amount form_textfield form-control"
+                                        autocomplete="off">
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="autoCalc" checked><span class="col-md-1">Calculate when type</span>
+                                </div>
+                            </div>
+                            <div class="row" style="display: inline-flex; margin-left: 50%;">
+                                <div class="col-xs-12 mt-3"><button type="button" id="calcB" class="btn btn-light" disabled>Calculate</button></div>
+                                <div class="col-md-1 col-sm-2 mt-3"><button type="button" id="clearB" class="btn btn-light" disabled>Clear</button></div>
+                            </div>
+                        </form>
+                        <div class="divider-bar"><hr class="hr hr-blurry"/></div>
+                        <div id="summary1"></div>
+                        <div id="summary2" class="font-weight-bolder mb-6" style="margin-top: 20px;margin-bottom: 20px;font-size: 30px;"></div>
+                        <div class="divider-bar"><hr class="hr hr-blurry"/></div>
+                        <div id="summary3" style="margin-bottom: 20px;"></div>
+                        <div class="divider-bar"><hr class="hr hr-blurry"/></div>
+                        <div class="divider-bar" style="margin-bottom: 20px;" data-bs-toggle="collapse" data-bs-target="#breakdownTable" aria-expanded="false" aria-controls="breakdownTable">
+                            <i class="fa-regular fa-hand-point-down"></i>
+                            <i class="fa-regular fa-hand-point-down"></i>
+                            <i class="fa-regular fa-hand-point-down"></i>&nbsp;&nbsp;&nbsp;<a href="#" id="showHideBreakdown"><u>&nbsp;Show / Hide Tax Breakdown&nbsp;</u></a>&nbsp;&nbsp;&nbsp;<i class="fa-regular fa-hand-point-down"></i>
+                            <i class="fa-regular fa-hand-point-down"></i>
+                            <i class="fa-regular fa-hand-point-down"></i>
+                        </div>
+                        <div class="collapse show" id="breakdownTable">
+                            <div id="result" class="txt-fs-12 text-center table-responsive" style="font-family: 'Maven Pro', sans-serif;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js"></script>
+
+</body>
+</html>
