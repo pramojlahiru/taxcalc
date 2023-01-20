@@ -51,9 +51,7 @@
                             $('#clearB').prop('disabled', true);
                             $('#calcB').prop('disabled', true);
                             $("#result").html('');
-                            $("#summary1").text("");
-                            $("#summary2").text("");
-                            $("#summary3").text("");
+                            clearSummary()
                             $(".divider-bar").hide();
                         } else {
                             $('#clearB').prop('disabled', false);
@@ -66,19 +64,15 @@
                         $(this).prop('disabled', true);
                         $("#calcB").prop('disabled', true);
                         $("#result").html('');
-                        $("#summary1").text("");
-                        $("#summary2").text("");
-                        $("#summary3").text("");
+                        clearSummary();
                         $(".divider-bar").hide();
                         $("#incomeAmount").focus();
                     });
 
                     $("#autoCalc").on("change", function() {
-                        var input = $("#incomeAmount");
                         if ($(this).is(":checked")) {
                             $("#calcB").hide();
                             calculateTax();
-                        // } else if (input.val() != "") {
                         } else {
                             $("#calcB").show();
                         }
@@ -88,57 +82,82 @@
                         calculateTax();
                     });
 
+                    // remove leading zeros and add thousand separators
+                    $('input').on('change, keyup', function() {
+                        var currentInput = $(this).val();
+                        var fixedInput = currentInput.replace(/^0+/, '').replace(/[A-Za-z!@#$%^&*(). ]/g, '');
+                        $(this).val(fixedInput);
+                    });
+
+                    // adding thousand separators to input text
+                    $("#incomeAmount").on("keyup", function () {
+                        var num = $(this).val().replace(/,/gi, "");
+                        // var num2 = num.split(/(?=(?:\d{3})+$)/).join(",");
+                        var num2 = numberWithCommas(num);
+                        $("#incomeAmount").val(num2);
+                        if ($("#autoCalc").is(":checked")) {
+                            calculateTax();
+                        }
+                    });
+
                 });
 
-                $.fn.digits = function () {
-                    return this.each(function () {
-                        $(this).text($(this).text().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"));
-                    })
-                }
-
+                // adding thousand separators to static texts
                 function numberWithCommas(x) {
                     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
 
+                function clearSummary(isNoTax) {
+                    if (isNoTax) {
+                        $("#summary2").text('No Tax');
+                        $("#summary2").css('color', 'green');
+                    } else {
+                        $("#summary2").text("");
+                    }
+                    $("#summary1").text("");
+                    $("#summary3").text("");
+                    $("#summary4").text("");
+                }
+
                 function calculateTax() {
                     var annualTax = 0;
-                    var monthlyIncome = $("#incomeAmount").val();
+                    var monthlyIncome = $("#incomeAmount").val().split(",").join("");
                     var yearlyIncome = monthlyIncome * 12;
                     if (yearlyIncome > 1200000) {
-                        $("#result").html('<table class="table table-hover border border-info" style="width:100%; max-width: 680px; text-align:right; display: inline-block;"><thead style="text-align:center;" class="thead-dark"><tr><th width="32%">Annual Salary (LKR)</th><th width="30%">Monthly Salary (LKR)</th><th width="15%">Rate (%)</th><th>Tax Amount (LKR)</th></tr></thead><tbody id="tb"></tbody></table>');
+                        $("#result").html('<table class="table table-hover border border-info" style="width:100%; max-width: 680px; text-align:right; display: inline-block;"><thead style="text-align:center;" class="thead-dark"><tr><th width="32%">Annual Salary (LKR)</th><th width="30%">Monthly Salary (LKR)</th><th width="15%">Rate (%)</th><th>Monthly Tax (LKR)</th></tr></thead><tbody id="tb"></tbody></table>');
                         if (yearlyIncome >= 3700000) {
                             var taxOfCurrentBlock = (yearlyIncome - 3700000) * 36 / 100;
-                            $("#tb").prepend('<tr><td>3,700,001 or above</td><td>308,334 or above</td><td>36</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            $("#tb").prepend('<tr><td>3,700,000 to ' + numberWithCommas(yearlyIncome) +'</td><td>308,333 to ' + numberWithCommas((yearlyIncome / 12).toFixed(0)) +'</td><td>36</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
                             annualTax += taxOfCurrentBlock;
                         }
                         if (yearlyIncome > 3200000) {
                             var upperLimit = (yearlyIncome > 3700000) ? 3700000 : yearlyIncome;
                             var taxOfCurrentBlock = (upperLimit - 3200000) * 30 / 100;
-                            $("#tb").prepend('<tr><td>3,200,001 to 3,700,000</td><td>266,667 to 308,333</td><td>30</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            $("#tb").prepend('<tr><td>3,200,000 to ' + numberWithCommas(upperLimit.toFixed(0)) + '</td><td>266,667 to ' + numberWithCommas((upperLimit / 12).toFixed(0)) + '</td><td>30</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
                             annualTax += taxOfCurrentBlock;
                         }
                         if (yearlyIncome > 2700000) {
                             var upperLimit = (yearlyIncome > 3200000) ? 3200000 : yearlyIncome;
                             var taxOfCurrentBlock = (upperLimit - 2700000) * 24 / 100;
-                            $("#tb").prepend('<tr><td>2,700,001 to 3,200,000</td><td>225,001 to 266,666</td><td>24</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            $("#tb").prepend('<tr><td>2,700,000 to ' + numberWithCommas(upperLimit.toFixed(0)) + '</td><td>225,000 to ' + numberWithCommas((upperLimit / 12).toFixed(0)) + '</td><td>24</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
                             annualTax += taxOfCurrentBlock;
                         }
                         if (yearlyIncome > 2200000) {
                             var upperLimit = (yearlyIncome > 2700000) ? 2700000 : yearlyIncome;
                             var taxOfCurrentBlock = (upperLimit - 2200000) * 18 / 100;
-                            $("#tb").prepend('<tr><td>2,200,001 to 2,700,000</td><td>183,334 to 225,000</td><td>18</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            $("#tb").prepend('<tr><td>2,200,000 to ' + numberWithCommas(upperLimit.toFixed(0)) + '</td><td>183,333 to ' + numberWithCommas((upperLimit / 12).toFixed(0)) + '</td><td>18</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
                             annualTax += taxOfCurrentBlock;
                         }
                         if (yearlyIncome > 1700000) {
                             var upperLimit = (yearlyIncome > 2200000) ? 2200000 : yearlyIncome;
                             var taxOfCurrentBlock = (upperLimit - 1700000) * 12 / 100;
-                            $("#tb").prepend('<tr><td>1,700,001 to 2,200,000</td><td>141,667 to 183,333</td><td>12</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            $("#tb").prepend('<tr><td>1,700,000 to ' + numberWithCommas(upperLimit.toFixed(0)) + '</td><td>141,667 to ' + numberWithCommas((upperLimit / 12).toFixed(0)) + '</td><td>12</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
                             annualTax += taxOfCurrentBlock;
                         }
                         if (yearlyIncome > 1200000) {
                             var upperLimit = (yearlyIncome > 1700000) ? 1700000 : yearlyIncome;
                             var taxOfCurrentBlock = (upperLimit - 1200000) * 6 / 100;
-                            $("#tb").prepend('<tr><td>1,200,001 to 1,700,000</td><td>100,001 to 141,666</td><td>6</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                            $("#tb").prepend('<tr><td>1,200,000 to ' + numberWithCommas(upperLimit.toFixed(0)) + '</td><td>100,000 to ' + numberWithCommas((upperLimit / 12).toFixed(0)) + '</td><td>6</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
                             annualTax += taxOfCurrentBlock;
                         }
                         if (yearlyIncome > 0) {
@@ -147,17 +166,15 @@
                             annualTax += taxOfCurrentBlock;
                         }
                         $("#tb").append('<tr><td colspan="2"></td><td class="table-info"><strong>Total</strong></td><td class="table-info">' + numberWithCommas((annualTax / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
-                        $("#summary1").text('Total Tax Amount for ' + numberWithCommas(monthlyIncome) + ' LKR is');
+                        $("#summary1").text('Monthly Tax Amount for ' + numberWithCommas(monthlyIncome) + ' LKR is');
                         $("#summary2").text(numberWithCommas((annualTax / 12).toFixed(2).toLocaleString("en")));
                         $("#summary3").text('Remaining amount on your hand - ' + numberWithCommas((monthlyIncome - (annualTax / 12)).toFixed(2).toLocaleString("en")) + ' LKR');
                         $(".divider-bar").show();
                         $("#summary2").css('color', 'crimson');
+                        $("#summary4").text('Yearly Tax Amount - ' + numberWithCommas(annualTax));
                     } else {
                         $("#result").html("");
-                        $("#summary1").text("");
-                        $("#summary2").text('No Tax');
-                        $("#summary2").css('color', 'green');
-                        $("#summary3").text("");
+                        clearSummary(true);
                         $(".divider-bar").hide();
                     }
                 }
@@ -177,7 +194,7 @@
             </style>
 
 
-            <div class="container" style="font-family:Oswald; line-height: 1.5em;">
+            <div class="container" style="font-family:Oswald; line-height: 1.5em; font-size:18px;">
                 <div class="row">
                     <div class="col-sm-12 text-center">
                         <h1 class="topic_page" style="margin-top: 5%; margin-bottom: 3%;">Tax Calculator Sri Lanka (2023)</h1>
@@ -185,7 +202,7 @@
                             <div class="row justify-content-center" style="align-items: center;">
                                 <div class="col-xs-12">Enter your monthly income (LKR) <i class="fa-solid fa-sack-dollar"></i></div>
                                 <div class="col-md-3 col-sm-4">
-                                    <input type="number" name="incomeAmount" id="incomeAmount" value=""
+                                    <input type="text" name="incomeAmount" id="incomeAmount" value="" maxlength="15"
                                         class="required amount form_textfield form-control" style="text-align: center; font-size:24px;"
                                         autocomplete="off">
                                 </div>
@@ -201,8 +218,10 @@
                         <div class="divider-bar"><hr class="hr hr-blurry"/></div>
                         <div id="summary1"></div>
                         <div id="summary2" class="font-weight-bolder mb-6" style="margin-top: 20px;margin-bottom: 20px;font-size: 30px;"></div>
-                        <div class="divider-bar"><hr class="hr hr-blurry"/></div>
+<!--                        <div class="divider-bar"><hr class="hr hr-blurry"/></div>-->
                         <div id="summary3" style="margin-bottom: 20px;"></div>
+                        <div class="divider-bar"><hr class="hr hr-blurry"/></div>
+                        <div id="summary4" style="margin-bottom: 20px;"></div>
                         <div class="divider-bar"><hr class="hr hr-blurry"/></div>
                         <div class="divider-bar" style="margin-bottom: 20px;" data-bs-toggle="collapse" data-bs-target="#breakdownTable" aria-expanded="false" aria-controls="breakdownTable">
                             <i class="fa-regular fa-hand-point-down"></i>
