@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -19,6 +20,7 @@
 
     <title>Tax Calculator</title>
 
+    <link rel="stylesheet" href="assets/css/style.css">
     <link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,7 +46,7 @@
     <meta property="og:url" content="https://taxcalculatorsl.netlify.app/">
 </head>
 
-<body style="background-image: url('/assets/images/background-light-03-3.jpg'); background-size: 1800px 2000px;">
+<body style="background-image: url('/assets/images/background-light-03-3.jpg'); background-size: 1800px 2000px;" id="body-main">
     <div id="wrapper_main">
 
         <div id="site_content" style="min-height: 402px;">
@@ -53,8 +55,11 @@
 
                 $(document).ready(function () {
                     $(".divider-bar").hide();
+                    $(".divider-bar").css('background', 'paleturquoise');
+                    $(".table-title").css('background', '');
                     $("#calcB").hide();
                     $("#incomeAmount").focus();
+
                     $("#cal").submit(function () {
                         return false;
                     });
@@ -118,6 +123,33 @@
                         if ($("#autoCalc").is(":checked")) {
                             calculateTax();
                         }
+                    });
+
+                    $("#switch-default").on('change', function () {
+                        if ($(this).is(":checked")) {
+                            $("#body-main").css('color', 'aliceblue');
+                            $("#body-main").css('background-image', 'url(\'/assets/images/background-dark-02-1.jpg\')');
+                            $("footer").css('color', 'dimgray');
+                            $(".divider-bar").css('background', 'darkgray');
+                            // total row
+                            $("#tb").css('color', 'aliceblue');
+                            $("#td-total-label").removeClass('table-info');
+                            $("#td-total-amount").removeClass('table-info');
+                            $("#td-total-label").addClass('table-dark');
+                            $("#td-total-amount").addClass('table-dark');
+                        } else {
+                            $("#body-main").css('color', '');
+                            $("#body-main").css('background-image', 'url(\'/assets/images/background-light-03-3.jpg\')');
+                            $("footer").css('color', 'darkgray');
+                            $(".divider-bar").css('background', 'paleturquoise');
+                            // total row
+                            $("#tb").css('color', 'black');
+                            $("#td-total-label").removeClass('table-dark');
+                            $("#td-total-amount").removeClass('table-dark');
+                            $("#td-total-label").addClass('table-info');
+                            $("#td-total-amount").addClass('table-info');
+                        }
+                        $(".table-title").css('background', '');
                     });
 
                 });
@@ -185,7 +217,7 @@
                             $("#tb").prepend('<tr><td>0 to 1,200,000</td><td>0 to 100,000</td><td>-</td><td>-</td></tr>');
                             annualTax += taxOfCurrentBlock;
                         }
-                        $("#tb").append('<tr><td colspan="2"></td><td class="table-info"><strong>Total</strong></td><td class="table-info">' + numberWithCommas((annualTax / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                        $("#tb").append('<tr><td colspan="2"></td><td id="td-total-label" class="table-info"><strong>Total</strong></td><td id="td-total-amount" class="table-info">' + numberWithCommas((annualTax / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
                         $("#summary1").text('Monthly Tax Amount for ' + numberWithCommas(monthlyIncome) + ' LKR is');
                         $("#summary2").text(numberWithCommas((annualTax / 12).toFixed(2).toLocaleString("en")));
                         $("#summary3").text('Remaining amount on your hand - ' + numberWithCommas((monthlyIncome - (annualTax / 12)).toFixed(2).toLocaleString("en")) + ' LKR');
@@ -201,17 +233,16 @@
 
             </script>
 
-            <style>
-                #tb td {
-                    text-align: right;
-                }
-            </style>
-
-
             <div class="container" style="font-family:Oswald; line-height: 1.5em; font-size:18px;">
                 <div class="row">
                     <div class="col-sm-12 text-center">
-                        <h1 class="topic_page" style="margin-top: 5%; margin-bottom: 3%;">Tax Calculator Sri Lanka (2023)</h1>
+                        <div class="justify-content-center mt-3">
+                            <div class="material-switch" id="toggle-label" style="font-size: 12px;">Toggle Dark Mode
+                                <input id="switch-default" name="switch-default" type="checkbox" style="alignment: center">
+                                <label for="switch-default" class="default-color"></label>
+                            </div>
+                        </div>
+                        <h1 class="topic_page" style="margin-top: 2%; margin-bottom: 3%;">Tax Calculator Sri Lanka (2023)</h1>
                         <form id="cal">
                             <div class="row justify-content-center" style="align-items: center;">
                                 <div class="col-xs-12">Enter your monthly income (LKR) <i class="fa-solid fa-sack-dollar"></i></div>
@@ -231,13 +262,13 @@
                         </form>
                         <div class="divider-bar"><hr class="hr hr-blurry"/></div>
                         <div id="summary1"></div>
-                        <div id="summary2" class="font-weight-bolder mb-6" style="margin-top: 20px;margin-bottom: 20px;font-size: 30px;"></div>
+                        <div id="summary2" class="font-weight-bolder mb-6 stroke-me" style="margin-top: 20px;margin-bottom: 20px;font-size: 30px;"></div>
 <!--                        <div class="divider-bar"><hr class="hr hr-blurry"/></div>-->
                         <div id="summary3" style="margin-bottom: 20px;"></div>
                         <div class="divider-bar"><hr class="hr hr-blurry"/></div>
                         <div id="summary4" style="margin-bottom: 20px;"></div>
                         <div class="divider-bar"><hr class="hr hr-blurry"/></div>
-                        <div class="divider-bar" style="margin-bottom: 20px;" data-bs-toggle="collapse" data-bs-target="#breakdownTable" aria-expanded="false" aria-controls="breakdownTable">
+                        <div class="divider-bar table-title" style="margin-bottom: 20px;" data-bs-toggle="collapse" data-bs-target="#breakdownTable" aria-expanded="false" aria-controls="breakdownTable">
                             <i class="fa-regular fa-hand-point-down"></i>
                             <i class="fa-regular fa-hand-point-down"></i>
                             <i class="fa-regular fa-hand-point-down"></i>&nbsp;&nbsp;&nbsp;<a href="#" id="showHideBreakdown"><u>&nbsp;Show / Hide Tax Breakdown&nbsp;</u></a>&nbsp;&nbsp;&nbsp;<i class="fa-regular fa-hand-point-down"></i>
