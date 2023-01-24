@@ -46,7 +46,7 @@
     <meta property="og:url" content="https://taxcalculatorsl.netlify.app/">
 </head>
 
-<body style="background-image: url('/assets/images/background-light-03-3.jpg'); background-size: 1800px 2000px;" id="body-main">
+<body style="background: rgb(206, 238, 248); background-size: 1800px 2000px;" id="body-main">
     <div id="wrapper_main">
 
         <div id="site_content" style="min-height: 402px;">
@@ -128,13 +128,13 @@
                     $("#switch-default").on('change', function () {
                         if ($(this).is(":checked")) {
                             $("#body-main").css('color', 'aliceblue');
-                            $("#body-main").css('background-image', 'url(\'/assets/images/background-dark-02-1.jpg\')');
+                            $("#body-main").css('background', 'black');
                             $("footer").css('color', 'dimgray');
                             $(".divider-bar").css('background', 'darkgray');
                             enableTableDarkMode();
                         } else {
                             $("#body-main").css('color', '');
-                            $("#body-main").css('background-image', 'url(\'/assets/images/background-light-03-3.jpg\')');
+                            $("#body-main").css('background', 'rgb(206, 238, 248)');
                             $("footer").css('color', 'darkgray');
                             $(".divider-bar").css('background', 'paleturquoise');
                             enableTableLightMode()
@@ -182,7 +182,7 @@
                     var monthlyIncome = $("#incomeAmount").val().split(",").join("");
                     var yearlyIncome = monthlyIncome * 12;
                     if (yearlyIncome > 1200000) {
-                        $("#result").html('<table class="table table-hover border border-info" style="width:100%; max-width: 680px; text-align:right; display: inline-block;"><thead style="text-align:center;" class="thead-dark"><tr><th width="32%">Annual Salary (LKR)</th><th width="30%">Monthly Salary (LKR)</th><th width="15%">Rate (%)</th><th>Monthly Tax (LKR)</th></tr></thead><tbody id="tb"></tbody></table>');
+                        $("#result").html('<table class="table table-hover border border-info" style="width:100%; max-width: 680px; text-align:right; display: inline-block; font-size: 16px"><thead style="text-align:center;" class="thead-dark"><tr><th width="32%">Annual Salary (LKR)</th><th width="30%">Monthly Salary (LKR)</th><th width="15%">Rate (%)</th><th>Monthly Tax (LKR)</th></tr></thead><tbody id="tb"></tbody></table>');
                         if (yearlyIncome >= 3700000) {
                             var taxOfCurrentBlock = (yearlyIncome - 3700000) * 36 / 100;
                             $("#tb").prepend('<tr><td>3,700,000 to ' + numberWithCommas(yearlyIncome) +'</td><td>308,333 to ' + numberWithCommas((yearlyIncome / 12).toFixed(0)) +'</td><td>36</td><td>' + numberWithCommas((taxOfCurrentBlock / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
