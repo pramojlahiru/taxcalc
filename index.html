@@ -131,23 +131,13 @@
                             $("#body-main").css('background-image', 'url(\'/assets/images/background-dark-02-1.jpg\')');
                             $("footer").css('color', 'dimgray');
                             $(".divider-bar").css('background', 'darkgray');
-                            // total row
-                            $("#tb").css('color', 'aliceblue');
-                            $("#td-total-label").removeClass('table-info');
-                            $("#td-total-amount").removeClass('table-info');
-                            $("#td-total-label").addClass('table-dark');
-                            $("#td-total-amount").addClass('table-dark');
+                            enableTableDarkMode();
                         } else {
                             $("#body-main").css('color', '');
                             $("#body-main").css('background-image', 'url(\'/assets/images/background-light-03-3.jpg\')');
                             $("footer").css('color', 'darkgray');
                             $(".divider-bar").css('background', 'paleturquoise');
-                            // total row
-                            $("#tb").css('color', 'black');
-                            $("#td-total-label").removeClass('table-dark');
-                            $("#td-total-amount").removeClass('table-dark');
-                            $("#td-total-label").addClass('table-info');
-                            $("#td-total-amount").addClass('table-info');
+                            enableTableLightMode()
                         }
                         $(".table-title").css('background', '');
                     });
@@ -169,6 +159,22 @@
                     $("#summary1").text("");
                     $("#summary3").text("");
                     $("#summary4").text("");
+                }
+
+                function enableTableDarkMode() {
+                    $("#tb").css('color', 'aliceblue');
+                    $("#td-total-label").removeClass('table-info');
+                    $("#td-total-amount").removeClass('table-info');
+                    $("#td-total-label").addClass('table-dark');
+                    $("#td-total-amount").addClass('table-dark');
+                }
+
+                function enableTableLightMode() {
+                    $("#tb").css('color', 'black');
+                    $("#td-total-label").removeClass('table-dark');
+                    $("#td-total-amount").removeClass('table-dark');
+                    $("#td-total-label").addClass('table-info');
+                    $("#td-total-amount").addClass('table-info');
                 }
 
                 function calculateTax() {
@@ -228,6 +234,12 @@
                         $("#result").html("");
                         clearSummary(true);
                         $(".divider-bar").hide();
+                    }
+                    // refresh table styles
+                    if ($("#switch-default").is(":checked")) {
+                        enableTableDarkMode();
+                    } else {
+                        enableTableLightMode();
                     }
                 }
 
