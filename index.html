@@ -46,7 +46,7 @@
     <meta property="og:url" content="https://taxcalculatorsl.netlify.app/">
 </head>
 
-<body style="background: rgb(206, 238, 248); background-size: 1800px 2000px;" id="body-main">
+<body style="background: #e4e5f1; background-size: 1800px 2000px;" id="body-main">
     <div id="wrapper_main">
 
         <div id="site_content" style="min-height: 402px;">
@@ -136,7 +136,7 @@
                             enableTableDarkMode();
                         } else {
                             $("#body-main").css('color', '');
-                            $("#body-main").css('background', 'rgb(206, 238, 248)');
+                            $("#body-main").css('background', '#e4e5f1');
                             $("footer").css('color', 'darkgray');
                             $(".divider-bar").css('background', 'paleturquoise');
                             $("#incomeAmount").css('background', 'white');
@@ -167,8 +167,6 @@
 
                 function enableTableDarkMode() {
                     $("#tb").css('color', 'aliceblue');
-                    $("#td-total-label").removeClass('table-info');
-                    $("#td-total-amount").removeClass('table-info');
                     $("#td-total-label").addClass('table-dark');
                     $("#td-total-amount").addClass('table-dark');
                 }
@@ -177,8 +175,6 @@
                     $("#tb").css('color', 'black');
                     $("#td-total-label").removeClass('table-dark');
                     $("#td-total-amount").removeClass('table-dark');
-                    $("#td-total-label").addClass('table-info');
-                    $("#td-total-amount").addClass('table-info');
                 }
 
                 function calculateTax() {
@@ -227,7 +223,7 @@
                             $("#tb").prepend('<tr><td>0 to 1,200,000</td><td>0 to 100,000</td><td>-</td><td>-</td></tr>');
                             annualTax += taxOfCurrentBlock;
                         }
-                        $("#tb").append('<tr><td colspan="2"></td><td id="td-total-label" class="table-info"><strong>Total</strong></td><td id="td-total-amount" class="table-info">' + numberWithCommas((annualTax / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
+                        $("#tb").append('<tr><td colspan="2"></td><td id="td-total-label" class="table-light"><strong>Total</strong></td><td id="td-total-amount" class="table-light">' + numberWithCommas((annualTax / 12).toFixed(2).toLocaleString("en")) + '</td></tr>');
                         $("#summary1").text('Monthly Tax Amount for ' + numberWithCommas(monthlyIncome) + ' LKR is');
                         $("#summary2").text(numberWithCommas((annualTax / 12).toFixed(2).toLocaleString("en")));
                         $("#summary3").text('Remaining amount on your hand - ' + numberWithCommas((monthlyIncome - (annualTax / 12)).toFixed(2).toLocaleString("en")) + ' LKR');
