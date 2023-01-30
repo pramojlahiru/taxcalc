@@ -128,16 +128,20 @@
                     $("#switch-default").on('change', function () {
                         if ($(this).is(":checked")) {
                             $("#body-main").css('color', 'aliceblue');
-                            $("#body-main").css('background', 'black');
+                            $("#body-main").css('background', '#40414e');
                             $("footer").css('color', 'dimgray');
                             $(".divider-bar").css('background', 'darkgray');
+                            $("#incomeAmount").css('background', '#343640FF');
+                            $("#incomeAmount").css('color', 'white');
                             enableTableDarkMode();
                         } else {
                             $("#body-main").css('color', '');
                             $("#body-main").css('background', 'rgb(206, 238, 248)');
                             $("footer").css('color', 'darkgray');
                             $(".divider-bar").css('background', 'paleturquoise');
-                            enableTableLightMode()
+                            $("#incomeAmount").css('background', 'white');
+                            $("#incomeAmount").css('color', '#4a5056');
+                            enableTableLightMode();
                         }
                         $(".table-title").css('background', '');
                     });
@@ -274,7 +278,7 @@
                         </form>
                         <div class="divider-bar"><hr class="hr hr-blurry"/></div>
                         <div id="summary1"></div>
-                        <div id="summary2" class="font-weight-bolder mb-6 stroke-me" style="margin-top: 20px;margin-bottom: 20px;font-size: 30px;"></div>
+                        <div id="summary2" class="font-weight-bolder mb-6" style="margin-top: 20px;margin-bottom: 20px;font-size: 30px;"></div>
 <!--                        <div class="divider-bar"><hr class="hr hr-blurry"/></div>-->
                         <div id="summary3" style="margin-bottom: 20px;"></div>
                         <div class="divider-bar"><hr class="hr hr-blurry"/></div>
